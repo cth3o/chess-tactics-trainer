@@ -1,6 +1,7 @@
 'use server'
 
-import prisma, { UserWithAccounts } from '@/lib/database'
+import { fetchChessAccounts } from '@/lib/authentication'
+import { UserWithAccounts } from '@/lib/database'
 import { revalidatePath } from 'next/cache'
 
 export const infosHasChanged = async (user: UserWithAccounts) => {
@@ -8,15 +9,7 @@ export const infosHasChanged = async (user: UserWithAccounts) => {
     return
   }
 
-  const accounts = await prisma.chessAccount.findMany({
-    where: {
-      users: {
-        some: {
-          user: { email: user.email }
-        }
-      }
-    }
-  })
+  const accounts = await fetchChessAccounts(user)
 
   const hasChanged = user.chessAccounts.some((currentAccount) =>
     accounts.some(

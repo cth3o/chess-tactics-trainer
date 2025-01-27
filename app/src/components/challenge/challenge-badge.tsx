@@ -1,3 +1,5 @@
+'use client'
+
 import { MotionCard } from '@/components/ui/motion-card'
 import { Progress } from '@/components/ui/progress'
 import {
@@ -16,35 +18,33 @@ interface ChallengeBadgeProps {
   total: number[]
 }
 
+const PROGRESSION_BADGE_IMAGES = [
+  '/badges/bronze.webp',
+  '/badges/silver.webp',
+  '/badges/gold.webp',
+  '/badges/diamant.webp'
+]
+
 export const ChallengeBadge = ({
   name,
   progress,
   total
 }: ChallengeBadgeProps) => {
-  const level =
-    progress < total[0]
-      ? 1
-      : progress < total[1]
-        ? 2
-        : progress < total[2]
-          ? 3
-          : 4
-  const levelImage = {
-    1: '/badges/bronze.webp',
-    2: '/badges/silver.webp',
-    3: '/badges/gold.webp',
-    4: '/badges/diamant.webp'
-  }
+  const firstIndex = total.findIndex((t) => progress < t)
+  const level = firstIndex === -1 ? total.length : firstIndex + 1
+  const totalForLevel = total[level - 1]
+  const progression = min([(progress * 100) / totalForLevel, 100])
+  const isFinished = progress >= totalForLevel
 
   return (
     <MotionCard
       className={cn(
-        'flex flex-col justify-center items-center rounded-none bg-background border-background border-4'
+        'flex flex-col justify-center items-center rounded-none bg-background/50 border-primary border-2'
       )}
     >
-      <div className='text-white text-center bg-foreground size-full mb-1 flex justify-around items-center'>
+      <div className='text-white text-center bg-background/50 size-full mb-1 flex justify-around items-center'>
         <div className='block' />
-        <span className='text-sm'>{name}</span>
+        <span className='text-xs'>{name}</span>
         <Tooltip>
           <TooltipTrigger>
             <BadgeInfo size={15} className='mr-1' />
@@ -52,22 +52,17 @@ export const ChallengeBadge = ({
           <TooltipContent>{name}</TooltipContent>
         </Tooltip>
       </div>
-      <Image
-        src={levelImage[level]}
-        alt='sicilian gold'
-        width={200}
-        height={200}
-      />
+      <Image src={PROGRESSION_BADGE_IMAGES[level - 1]} alt='badge' width={200} height={200} />
       <Progress
-        value={min([(progress * 100) / total[level - 1], 100])}
-        className='rounded-none'
+        value={progression}
+        className='rounded-none h-8'
       />
-      <div className='text-sm text-muted-foreground bg-foreground w-full text-center mt-1'>
-        {progress >= total[level - 1] ? (
+      <div className='text-sm text-muted-foreground bg-background/50 w-full text-center mt-1'>
+        {isFinished ? (
           <CircleCheckBig size={20} className='mx-auto' color='white' />
         ) : (
           <span>
-            {progress} / {total[level - 1]}
+            {progress} / {totalForLevel}
           </span>
         )}
       </div>

@@ -20,7 +20,7 @@ export const SidebarButton = ({
         <Button
             variant='link'
             className={cn('size-4 p-8 text-white hover:no-underline rounded-none', {
-                'bg-primary': active
+                'bg-primary text-white': active
             })}
             size='icon'
         >

@@ -1,6 +1,5 @@
 import { ChessGame } from '@/components/game/chess-game'
 import { FilterButton } from '@/components/game/filter-button'
-import { GameFilters } from '@/components/game/game.store'
 import { LatestGamesTable } from '@/components/game/latest-games-table'
 import { ComputedNumber } from '@/components/stats/computed-value'
 import { CountGameChart } from '@/components/stats/count-game-chart'
@@ -8,8 +7,9 @@ import { RatioVictoryChart } from '@/components/stats/ratio-victory-chart'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { MotionCard } from '@/components/ui/motion-card'
 import { Text } from '@/components/ui/text'
-import { checkServerSessionOrRedirect } from '@/lib/authentication'
-import prisma from '@/lib/database'
+import { checkServerSessionOrRedirect, getChessAccountFromUser } from '@/lib/authentication'
+import { getGamesFromAccounts } from '@/lib/games/games'
+import { GameFilters } from '@/lib/stats/filters'
 import { 
   countTotalGames, 
   getGamesLastSixMonths, 
@@ -31,25 +31,8 @@ const EMPTY_FILTERS: GameFilters = {
 
 export default async function DashboardPage() {
   const user = await checkServerSessionOrRedirect()
-  const chessAccounts =
-    user?.chessAccounts.map((account) => account.chessAccount) || []
-
-  const games = await prisma.game.findMany({
-    where: {
-      OR: [
-        ...chessAccounts.map((account) => {
-          return { whiteChessAccountId: account.id }
-        }),
-        ...chessAccounts.map((account) => {
-          return { blackChessAccountId: account.id }
-        })
-      ]
-    },
-    orderBy: {
-      date: 'desc'
-    },
-    take: 25
-  })
+  const chessAccounts = getChessAccountFromUser(user)
+  const games = await getGamesFromAccounts(chessAccounts)
 
   const victoryRatioData = await getWinPercentageLastSixMonths(chessAccounts, EMPTY_FILTERS)
   const victoryRatioAverage =
@@ -60,7 +43,7 @@ export default async function DashboardPage() {
     <div className='grid size-full grid-flow-row-dense grid-cols-12 gap-4'>
       <MotionCard
         className={cn(
-          'col-span-12 h-full bg-foreground xl:col-span-6 p-2 text-white rounded-none border-none'
+          'col-span-12 bg-foreground xl:col-span-6 p-2 text-white rounded-none border-none'
         )}
       >
         <CardHeader>
@@ -71,7 +54,7 @@ export default async function DashboardPage() {
             <FilterButton />
           </CardTitle>
         </CardHeader>
-        <CardContent className='h-72'>
+        <CardContent className='h-72 block'>
           <LatestGamesTable 
             initialGames={games} 
             chessAccounts={chessAccounts} 
@@ -129,7 +112,7 @@ export default async function DashboardPage() {
         </CardContent>
       </MotionCard>
 
-      <ChessGame />
+      <ChessGame accountIds={chessAccounts.map((account) => account.id)}/>
     </div>
   )
 }

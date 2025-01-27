@@ -2,11 +2,11 @@ import { FilterButton } from '@/components/game/filter-button'
 import { LatestGamesTable } from '@/components/game/latest-games-table'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { MotionCard } from '@/components/ui/motion-card'
-import { checkServerSessionOrRedirect } from '@/lib/authentication'
-import prisma from '@/lib/database'
+import { checkServerSessionOrRedirect, getChessAccountFromUser } from '@/lib/authentication'
+import { getGamesCount, getGamesFromAccounts } from '@/lib/games/games'
 import { cn } from '@/lib/utils'
 
-const gamesPerPage = 10
+const GAMES_PER_PAGE = 10
 
 interface GameSearchParams {
   page: string
@@ -18,8 +18,7 @@ interface GamesPageProps {
 
 export default async function GamesPage({ searchParams }: GamesPageProps) {
   const user = await checkServerSessionOrRedirect()
-  const chessAccounts =
-    user?.chessAccounts.map((account) => account.chessAccount) || []
+  const chessAccounts = getChessAccountFromUser(user)
 
   const { page } = searchParams
   let pageNumber = parseInt(page, 10) || 1
@@ -27,38 +26,9 @@ export default async function GamesPage({ searchParams }: GamesPageProps) {
     pageNumber = 1
   }
 
-  const games = await prisma.game.findMany({
-    where: {
-      OR: [
-        ...chessAccounts.map((account) => {
-          return { whiteChessAccountId: account.id }
-        }),
-        ...chessAccounts.map((account) => {
-          return { blackChessAccountId: account.id }
-        })
-      ]
-    },
-    orderBy: {
-      date: 'desc'
-    },
-    skip: (pageNumber - 1) * gamesPerPage,
-    take: gamesPerPage
-  })
-
-  const totalGames = await prisma.game.count({
-    where: {
-      OR: [
-        ...chessAccounts.map((account) => {
-          return { whiteChessAccountId: account.id }
-        }),
-        ...chessAccounts.map((account) => {
-          return { blackChessAccountId: account.id }
-        })
-      ]
-    }
-  })
-
-  const maxPage = Math.ceil(totalGames / gamesPerPage)
+  const games = await getGamesFromAccounts(chessAccounts, GAMES_PER_PAGE, pageNumber)
+  const totalGames = await getGamesCount(chessAccounts)
+  const maxPage = Math.ceil(totalGames / GAMES_PER_PAGE)
 
   return (
     <>
@@ -78,7 +48,7 @@ export default async function GamesPage({ searchParams }: GamesPageProps) {
             initialGames={games}
             chessAccounts={chessAccounts}
             page={pageNumber}
-            gamesPerPage={gamesPerPage}
+            gamesPerPage={GAMES_PER_PAGE}
             enabledPreview={false}
             maxPage={maxPage}
           />

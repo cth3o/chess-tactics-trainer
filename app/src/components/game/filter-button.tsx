@@ -13,16 +13,16 @@ import MultipleSelector, { Option } from '@/components/ui/multiple-select'
 import { cn } from '@/lib/utils'
 import { Filter } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { useGameStore } from './game.store'
+import { useGameStore } from '../../stores/game.store'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 
-const platformOptions: Option[] = [
+const PLATFORM_OPTIONS: Option[] = [
   { label: 'chess.com', value: 'chesscom' },
   { label: 'lichess.org', value: 'lichess' }
 ]
 
-const categoryOptions: Option[] = [
+const CATEGORY_OPTIONS: Option[] = [
   { label: 'Bullet', value: 'bullet' },
   { label: 'Blitz', value: 'blitz' },
   { label: 'Rapid', value: 'rapid' },
@@ -30,13 +30,13 @@ const categoryOptions: Option[] = [
   { label: 'Daily', value: 'daily' }
 ]
 
-const gamewinnerOptions: Option[] = [
+const GAME_STATUS_OPTIONS: Option[] = [
   { label: 'Win', value: 'win' },
   { label: 'Loose', value: 'loose' },
   { label: 'Draw', value: 'draw' }
 ]
 
-const tagOptions = [
+const GAME_TAG_OPTIONS = [
   { label: 'Mate', value: 'mate' },
   { label: 'Draw', value: 'draw' },
   { label: 'Resign', value: 'resign' },
@@ -45,7 +45,7 @@ const tagOptions = [
   { label: 'Stalemate', value: 'stalemate' }
 ]
 
-const analysedOptions = [
+const ANALYSED_OPTIONS = [
   { label: 'Yes', value: 'yes' },
   { label: 'No', value: 'no' }
 ]
@@ -109,7 +109,7 @@ export const FilterButton = () => {
   return (
     <Dialog open={open} onOpenChange={handleChangeOpen}>
       <DialogTrigger asChild>
-        <Button variant='link' className='text-white hover:text-primary'>
+        <Button variant='link' className='text-white hover:text-secondary'>
           <Filter className={cn('w-6 h-6', {
             'text-active hover:text-primary': isActiveFilter
           })} />
@@ -130,7 +130,7 @@ export const FilterButton = () => {
             <MultipleSelector
               className='w-full text-white border-primary bg-foreground'
               badgeClassName='text-white'
-              defaultOptions={platformOptions}
+              defaultOptions={PLATFORM_OPTIONS}
               commandProps={{
                 className: 'bg-background'
               }}
@@ -138,7 +138,7 @@ export const FilterButton = () => {
               emptyIndicator={null}
               hidePlaceholderWhenSelected
               value={editedFilters.providers.map(
-                (provider) => platformOptions.find((po) => po.value === provider)
+                (provider) => PLATFORM_OPTIONS.find((po) => po.value === provider)
               ).filter((v) => v !== undefined)}
               onChange={(value) => { setEditedFilters({ ...editedFilters, providers: value.map((v) => v.value) }) }}
             />
@@ -150,12 +150,12 @@ export const FilterButton = () => {
                 className: 'bg-foreground'
               }}
               badgeClassName='text-white'
-              defaultOptions={categoryOptions}
+              defaultOptions={CATEGORY_OPTIONS}
               placeholder='Select speed category'
               emptyIndicator={null}
               hidePlaceholderWhenSelected
               value={editedFilters.categories.map(
-                (c) => categoryOptions.find((co) => co.value === c)
+                (c) => CATEGORY_OPTIONS.find((co) => co.value === c)
               ).filter((v) => v !== undefined)}
               onChange={(value) => { setEditedFilters({ ...editedFilters, categories: value.map((v) => v.value) }) }}
             />
@@ -168,12 +168,12 @@ export const FilterButton = () => {
                 className: 'bg-foreground'
               }}
               badgeClassName='text-white'
-              defaultOptions={tagOptions}
+              defaultOptions={GAME_TAG_OPTIONS}
               placeholder='Select tags'
               emptyIndicator={null}
               hidePlaceholderWhenSelected
               value={editedFilters.tags.map(
-                  (t) => tagOptions.find((to) => to.value === t)
+                  (t) => GAME_TAG_OPTIONS.find((to) => to.value === t)
                 ).filter((v) => v !== undefined)
               }
               onChange={(value) => { setEditedFilters({ ...editedFilters, tags: value.map((v) => v.value) }) }}
@@ -186,12 +186,12 @@ export const FilterButton = () => {
                 className: 'bg-foreground'
               }}
               badgeClassName='text-white'
-              defaultOptions={gamewinnerOptions}
+              defaultOptions={GAME_STATUS_OPTIONS}
               placeholder='Select game winner'
               emptyIndicator={null}
               hidePlaceholderWhenSelected
               value={editedFilters.winner.map(
-                (s) => gamewinnerOptions.find((so) => so.value === s))
+                (s) => GAME_STATUS_OPTIONS.find((so) => so.value === s))
                 .filter((v) => v !== undefined)
               }
               onChange={(value) => { setEditedFilters({ ...editedFilters, winner: value.map((v) => v.value) }) }}
@@ -204,12 +204,12 @@ export const FilterButton = () => {
                 className: 'bg-foreground'
               }}
               badgeClassName='text-white'
-              defaultOptions={analysedOptions}
+              defaultOptions={ANALYSED_OPTIONS}
               placeholder='Select analysed'
               emptyIndicator={null}
               hidePlaceholderWhenSelected
               value={editedFilters.analysed.map(
-                  (a) => analysedOptions.find((ao) => ao.value === a)
+                  (a) => ANALYSED_OPTIONS.find((ao) => ao.value === a)
                 ).filter((v) => v !== undefined)
             }
               onChange={(value) => { setEditedFilters({ ...editedFilters, analysed: value.map((v) => v.value) }) }}

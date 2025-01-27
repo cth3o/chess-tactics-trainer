@@ -26,23 +26,43 @@ const config = {
         display: ['lato', ...fontFamily.sans],
       },
       colors: {
+        'chart-1': '#211A22', 
+        'chart-2': '#283762',
+        'chart-3': '#BAC3E4',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        background: '#261F27',
-        foreground: '#2E252A',
-        active: '#DC8E08',
-        primary: '#C96E1F',
-        // primary: '#1F86C9',
+
+        // background: '#BAC3E4',
         // primary: '#AD6205',
-        white: '#F6DED2',
-        black: '#211A22',
+        // active: '#AD6205',
+        // foreground: '#2f437a',
+        
+        primary: '#2f437a',
+        secondary: '#BAC3E4',
+        active: '#AD6205',
+        
+        background: '#302E2B',
+        foreground: '#262522',
+ 
+        
+        // background: '#261F27',
+        // foreground: '#2E252A',
+
+        // active: '#DC8E08',
+        // // primary: '#C96E1F',
+        // // primary: '#1F86C9',
+        // primary: '#AD6205',
+        // white: '#F6DED2',
+        // black: '#211A22',
+
+
         chessBlack: '#283762',
         chessWhite: '#BAC3E4',
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
+        // secondary: {
+        //   DEFAULT: 'hsl(var(--secondary))',
+        //   foreground: 'hsl(var(--secondary-foreground))',
+        // },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',

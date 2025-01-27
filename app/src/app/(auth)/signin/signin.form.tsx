@@ -107,6 +107,7 @@ export const SigninForm = () => {
             </div>
             <Button
                 className='w-full mt-4 rounded-none dark'
+                variant='secondary'
                 disabled={form.formState.isSubmitting}
                 type='submit'
                 size='lg'

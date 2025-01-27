@@ -6,46 +6,20 @@ import {
 } from '@/components/ui/accordion'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { MotionCard } from '@/components/ui/motion-card'
-import { checkServerSessionOrRedirect } from '@/lib/authentication'
-import prisma from '@/lib/database'
+import {
+  checkServerSessionOrRedirect,
+  getChessAccountFromUser
+} from '@/lib/authentication'
 import { cn } from '@/lib/utils'
-import { ChallengeBadge } from './challenge-badge'
+import { ChallengeBadge } from '@/components/challenge/challenge-badge'
+import { OPENING_CHALLENGES } from './challenges'
+import { getWinByOpening } from '@/lib/stats/opening'
 
 export default async function StatsPage() {
   const user = await checkServerSessionOrRedirect()
-  const chessAccounts =
-    user?.chessAccounts.map((account) => account.chessAccount) || []
+  const chessAccounts = getChessAccountFromUser(user)
 
-  const openings = await prisma.game.groupBy({
-    _count: {
-      _all: true
-    },
-    where: {
-      OR: [
-        {
-          AND: [
-            {
-              whiteChessAccountId: {
-                in: chessAccounts.map((account) => account.id)
-              }
-            },
-            { winner: 'white' }
-          ]
-        },
-        {
-          AND: [
-            {
-              blackChessAccountId: {
-                in: chessAccounts.map((account) => account.id)
-              }
-            },
-            { winner: 'black' }
-          ]
-        }
-      ]
-    },
-    by: ['opening']
-  })
+  const openings = await getWinByOpening(chessAccounts)
 
   const getTotalGamesFromOpening = (commonOpening: string) => {
     return openings
@@ -55,108 +29,11 @@ export default async function StatsPage() {
       .reduce((acc, curr) => acc + curr._count._all, 0)
   }
 
-  const challenges = [
-    {
-      name: 'Sicilian Defense',
-      progress: getTotalGamesFromOpening('sicilian'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'French Defense',
-      progress: getTotalGamesFromOpening('french'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Caro-Kann Defense',
-      progress: getTotalGamesFromOpening('kann'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'King\'s Indian Defense',
-      progress: getTotalGamesFromOpening('king\'s indian'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Queen\'s Gambit',
-      progress: getTotalGamesFromOpening('queen\'s gambit'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Ruy Lopez',
-      progress: getTotalGamesFromOpening('lopez'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Nimzo-Indian Defense',
-      progress: getTotalGamesFromOpening('nimzo'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Scotch Game',
-      progress: getTotalGamesFromOpening('scotch'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Italian Game',
-      progress: getTotalGamesFromOpening('italian'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Philidor Defense',
-      progress: getTotalGamesFromOpening('philidor'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Pirc Defense',
-      progress: getTotalGamesFromOpening('pirc'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Alekhine Defense',
-      progress: getTotalGamesFromOpening('alekhine'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Benoni Defense',
-      progress: getTotalGamesFromOpening('benoti'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Dutch Defense',
-      progress: getTotalGamesFromOpening('dutch'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'English Opening',
-      progress: getTotalGamesFromOpening('english'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Grünfeld Defense',
-      progress: getTotalGamesFromOpening('nfeld'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Modern Defense',
-      progress: getTotalGamesFromOpening('modern'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Petrov Defense',
-      progress: getTotalGamesFromOpening('petrov'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Vienna Game',
-      progress: getTotalGamesFromOpening('vienna'),
-      total: [10, 25, 50, 100]
-    },
-    {
-      name: 'Two Knights Defense',
-      progress: getTotalGamesFromOpening('two knights'),
-      total: [10, 25, 50, 100]
-    }
-  ]
+  const openingChallenges = OPENING_CHALLENGES.map((challenge) => ({
+    name: challenge.name,
+    progress: getTotalGamesFromOpening(challenge.label),
+    total: challenge.total
+  }))
 
   return (
     <MotionCard
@@ -165,17 +42,20 @@ export default async function StatsPage() {
       )}
     >
       <CardHeader>
-        <CardTitle className='flex w-full justify-between items-center'>
+        <CardTitle className='flex w-full text-4xl justify-between items-center'>
           Challenges
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Accordion type='single' collapsible>
+        <Accordion type='single' collapsible defaultValue='item-1'>
           <AccordionItem value='item-1'>
             <AccordionTrigger className='pl-4'>Openings</AccordionTrigger>
             <AccordionContent>
-              <div className='grid grid-cols-8 gap-8 justify-center align-baseline m-6'>
-                {challenges.map((challenge, index) => (
+              <div
+                className={`grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6
+                 gap-8 lg:w-4/5 mx-auto justify-center align-baseline m-6`}
+              >
+                {openingChallenges.map((challenge, index) => (
                   <ChallengeBadge
                     key={index}
                     name={challenge.name}

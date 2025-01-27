@@ -2,7 +2,7 @@
 
 import { ChessAccount } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
-import { GameFilters, useGameStore } from '@/components/game/game.store'
+import { GameFilters, useGameStore } from '@/stores/game.store'
 import { Loader2 } from 'lucide-react'
 import { useEffect } from 'react'
 import { queryClient } from '@/app/providers'

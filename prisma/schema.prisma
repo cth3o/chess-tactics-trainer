@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  // output  = "../node_modules/.prisma/client"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -52,21 +52,21 @@ model User {
   name              String?
   email             String?            @unique
   password          String?
-  salt              String?           
+  salt              String?
   emailVerified     DateTime?
   image             String?
   accounts          Account[]
   sessions          Session[]
   verificationToken VerificationToken?
-  chessAccounts     ChessAccountUser[]  
+  chessAccounts     ChessAccountUser[]
 }
 
 model ChessAccount {
-  id         String    @id @default(cuid())
-  users      ChessAccountUser[]    
+  id         String             @id @default(cuid())
+  users      ChessAccountUser[]
   provider   String
   username   String
-  isFetching Boolean  @default(false)
+  isFetching Boolean            @default(false)
   lastFetch  DateTime?
   rating     Int?
 
@@ -77,12 +77,12 @@ model ChessAccount {
 }
 
 model ChessAccountUser {
-  chessAccount    ChessAccount @relation(fields: [chessAccountId], references: [id]) 
-  chessAccountId  String
-  user            User         @relation(fields: [userId], references: [id])
-  userId          String
+  chessAccount   ChessAccount @relation(fields: [chessAccountId], references: [id])
+  chessAccountId String
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
 
-  @@id([chessAccountId, userId]) 
+  @@id([chessAccountId, userId])
   @@unique([chessAccountId, userId])
 }
 
@@ -125,7 +125,41 @@ model Game {
   opening             String
   clocks              Int[]
   date                DateTime
+  analysing           Boolean      @default(false)
 
   whiteChessAcount ChessAccount? @relation(name: "WhiteChessAccount", fields: [whiteChessAccountId], references: [id])
   blackChessAcount ChessAccount? @relation(name: "BlackChessAccount", fields: [blackChessAccountId], references: [id])
+
+  analysis GameAnalysis[]
+}
+
+// Analysis
+
+enum Quality {
+  excellent
+  good
+  inaccuracy
+  mistake
+  blunder
+}
+
+enum Engine {
+  stockfish
+}
+
+model GameAnalysis {
+  id           String    @id @default(cuid())
+  gameId       String    @unique
+  date         DateTime
+  scores       String[]
+  movesQuality Quality[]
+  variants     String[]
+  engine       Engine
+  depth        Int
+  multipv      Int
+  skillLevel   Int
+  moveTime     Int
+  threads      Int
+
+  game Game @relation(fields: [gameId], references: [id])
 }
