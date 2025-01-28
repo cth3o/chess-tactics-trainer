@@ -5,8 +5,6 @@ WORKDIR /app
 COPY app . 
 COPY prisma .
 
-RUN apt-get update && apt-get install -y libssl1.1
-
 RUN npm install
 RUN npm run build:ci
 
