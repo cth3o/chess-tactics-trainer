@@ -35,7 +35,7 @@ export const UserDetails = ({ user }: UserProps) => {
 
   const getAccountByType = (type: string) => {
     return user.chessAccounts.find(
-      (account) => account.chessAccount.provider === type
+      (account: any) => account.chessAccount.provider === type
     )?.chessAccount
   }
 
