@@ -13,19 +13,17 @@ export default async function handler(
     const { lichessUsername, chesscomUsername }  = req.body
 
     if (lichessUsername !== undefined) {
-    const response = await fetch(`https://lichess.org/api/users/status?ids=${lichessUsername}`)
+      const response = await fetch(`https://lichess.org/api/users/status?ids=${lichessUsername}`)
+      const data = await response.json()
 
-    const data = await response.json()
-
-    if (data.length === 0) {
-      res.status(404).json({ success: false })
-      return
-    }
-    res
-      .status(200)
-      .json({ success: true })
+      if (data.length === 0) {
+        res.status(404).json({ success: false })
+        return
+      }
+      res
+        .status(200)
+        .json({ success: true })
     } else if (chesscomUsername !== undefined) {
-
       const response = await fetch(`https://www.chess.com/member/${chesscomUsername}`)
       const data = await response.text()
       if (data.includes('Page not found')) {
@@ -72,10 +70,18 @@ export default async function handler(
     }
     
     if (!isNil(lichessUsername) && !isEmpty(lichessUsername)) {
+      const response = await fetch(`https://lichess.org/api/users/status?ids=${lichessUsername}`)
+      const data = await response.json()
+
+      if (data.length === 0) {
+        res.status(404).json({ success: false })
+        return
+      }
+
       await prisma.chessAccount.create({
         data: {
           provider: 'lichess',
-          username: lichessUsername,
+          username: lichessUsername.toLowerCase().trim(),
           users: {
             create: {
               userId: user.id
@@ -86,10 +92,17 @@ export default async function handler(
     }
 
     if (!isNil(chesscomUsername) && !isEmpty(chesscomUsername)) {
+      const response = await fetch(`https://www.chess.com/member/${chesscomUsername}`)
+      const data = await response.text()
+      if (data.includes('Chesscom username not found')) {
+        res.status(404).json({ success: false })
+        return
+      }
+
       await prisma.chessAccount.create({
         data: {
           provider: 'chesscom',
-          username: chesscomUsername,
+          username: chesscomUsername.trim(),
           users: {
             create: {
               userId: user.id
