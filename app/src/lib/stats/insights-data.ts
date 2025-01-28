@@ -1,9 +1,8 @@
 'use server'
 
-import { GameFilters } from '@/components/game/game.store'
 import { ChessAccount } from '@prisma/client'
 import prisma from '../database'
-import { convertFiltersToWhere } from './filters'
+import { convertFiltersToWhere, GameFilters } from './filters'
 
 export const countTotalGames = async (
   chessAccounts: ChessAccount[],
@@ -24,6 +23,9 @@ export const getFilteredGames = async (
   offset?: number
 ) => {
   const games = await prisma.game.findMany({
+    include: {
+      analysis: true,
+    },
     where: {
       AND: await convertFiltersToWhere(chessAccounts, filters),
     },
@@ -45,7 +47,7 @@ export const getGamesLastSixMonths = async (
 
   const currentDate = new Date()
 
-  for (let i = 0; i < 6; i += 1) {
+  for (let i = 0; i < 12; i += 1) {
     const month = currentDate.getMonth() - i
     const year = currentDate.getFullYear()
 
@@ -78,7 +80,7 @@ export const getWinPercentageLastSixMonths = async (
   const results = []
   const currentDate = new Date()
 
-  for (let i = 0; i < 6; i += 1) {
+  for (let i = 0; i < 12; i += 1) {
     const month = currentDate.getMonth() - i
     const year = currentDate.getFullYear()
     const startDate = new Date(year, month, 1)

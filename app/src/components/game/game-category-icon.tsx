@@ -8,6 +8,7 @@ import {
   TurtleIcon,
   Zap
 } from 'lucide-react'
+import { toTitleCase } from '@/lib/strings'
 
 interface GameCategoryIconProps {
   category: GameCategory
@@ -15,22 +16,14 @@ interface GameCategoryIconProps {
 
 export const GameCategoryIcon = ({ category }: GameCategoryIconProps) => {
   const getIcon = () => {
-    if (category === 'blitz') {
-      return <Zap size={20} />
+    const icons = {
+      blitz: <Zap size={20} />,
+      rapid: <RabbitIcon size={20} />,
+      bullet: <TrainFront size={20} />,
+      classical: <TurtleIcon size={20} />,
+      daily: <CalendarClock size={20} />
     }
-    if (category === 'rapid') {
-      return <RabbitIcon size={20} />
-    }
-    if (category === 'bullet') {
-      return <TrainFront size={20} />
-    }
-    if (category === 'classical') {
-      return <TurtleIcon size={20} />
-    }
-    if (category === 'daily') {
-      return <CalendarClock size={20} />
-    }
-    return null
+    return icons[category] || null
   }
 
   return <Tooltip>
@@ -38,7 +31,7 @@ export const GameCategoryIcon = ({ category }: GameCategoryIconProps) => {
     {getIcon()}
     </TooltipTrigger>
     <TooltipContent className='p-2 text-white bg-black rounded-none'>
-      {category.charAt(0).toUpperCase() + category.slice(1)}
+      {toTitleCase(category)}
     </TooltipContent>
     </Tooltip>
 }

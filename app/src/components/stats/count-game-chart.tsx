@@ -15,7 +15,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { useGameStore } from '../game/game.store'
+import { useGameStore } from '../../stores/game.store'
 
 interface BarWithBorderProps {
   fill: string
@@ -47,9 +47,9 @@ const BarWithBorder = () => {
           x={x}
           y={y}
           width={width}
-          height={1}
+          height={2.2}
           stroke='none'
-          fill={'#DC8E08'}
+          fill={'hsl(var(--primary))'}
         />
       </g>
     )
@@ -91,8 +91,8 @@ export const CountGameChart = ({ initialData, chessAccounts }: CountGameChartPro
       >
         <defs>
           <linearGradient id='colorGames' x1='0' y1='0' x2='0' y2='1'>
-            <stop offset='5%' stopColor='#261F27' stopOpacity={1} />
-            <stop offset='95%' stopColor='#261F27' stopOpacity={0.3} />
+          <stop offset='5%' stopColor='#A36624' stopOpacity={0.3} />
+          <stop offset='95%' stopColor='#A36624' stopOpacity={0.05} />
           </linearGradient>
         </defs>
         <XAxis
@@ -102,7 +102,7 @@ export const CountGameChart = ({ initialData, chessAccounts }: CountGameChartPro
           tick={{ fill: '#F7EFE4', fontSize: 11 }}
         />
         <YAxis hide={true} />
-        <CartesianGrid vertical={false} strokeDasharray='4 4' opacity={0.2} />
+        <CartesianGrid vertical={false} strokeDasharray='5 5' opacity={0.2} />
         <Tooltip
           cursor={false}
           contentStyle={{

@@ -13,18 +13,18 @@ export default async function SignInPage() {
         <div className='flex items-center justify-center w-full min-h-screen text-white border-none bg-foreground'>
             <AuthImage />
             <div className='flex flex-col items-center justify-around w-full lg:w-5/12'>
-                <h1 className='pb-2 mb-10 text-3xl font-semibold tracking-tight border-b scroll-m-20 first:mt-0'>
+                <h1 className='pb-2 mb-10 text-4xl font-semibold tracking-tight border-b scroll-m-20 first:mt-0'>
                     Chess Tactics Manager
                 </h1>
                 <div className='w-3/4 text-left md:w-1/2'>
                     <SigninForm />
-                    <Separator className='my-12' />
+                    <Separator className='my-12 bg-secondary' />
                     <div className='flex flex-col items-center justify-center gap-2'>
                             <GoogleButton />
                             <FacebookButton />
                         <p className='mt-10 text-sm'>
                             Don’t have an account?
-                            <span className='ml-1 text-primary hover:underline'>
+                            <span className='ml-1 text-active hover:underline'>
                                 <Link href='/signup'>
                                     Sign up now
                                 </Link>

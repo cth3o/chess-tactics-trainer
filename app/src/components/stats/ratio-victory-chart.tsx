@@ -15,7 +15,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { useGameStore } from '../game/game.store'
+import { useGameStore } from '../../stores/game.store'
 
 interface RatioVictoryChartProps {
   initialData: { month: string, precision: number }[]
@@ -46,8 +46,8 @@ export const RatioVictoryChart = ({ initialData, chessAccounts }: RatioVictoryCh
       >
         <defs>
           <linearGradient id='colorPrecision' x1='0' y1='0' x2='0' y2='1'>
-            <stop offset='5%' stopColor='#261F27' stopOpacity={1} />
-            <stop offset='95%' stopColor='#261F27' stopOpacity={0.3} />
+            <stop offset='5%' stopColor='#A36624' stopOpacity={0.3} />
+            <stop offset='95%' stopColor='#A36624' stopOpacity={0.05} />
           </linearGradient>
         </defs>
         <XAxis
@@ -62,7 +62,7 @@ export const RatioVictoryChart = ({ initialData, chessAccounts }: RatioVictoryCh
           tick={{ fill: '#F7EFE4', fontSize: 11 }}
           domain={[0, 100]}
         />
-        <CartesianGrid vertical={false} strokeDasharray='4 4' opacity={0.2} />
+        <CartesianGrid vertical={false} strokeDasharray='5 5' opacity={0.2} />
         <Tooltip
           contentStyle={{
             background: '#261F27',
@@ -74,8 +74,8 @@ export const RatioVictoryChart = ({ initialData, chessAccounts }: RatioVictoryCh
         <Area
           type='monotone'
           dataKey='precision'
-          stroke='#DC8E08'
-          strokeWidth={1}
+          stroke='hsl(var(--primary))'
+          strokeWidth={2.2}
           fillOpacity={1}
           fill='url(#colorPrecision)'
         />

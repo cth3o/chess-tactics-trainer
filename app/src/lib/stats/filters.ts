@@ -1,10 +1,17 @@
 'use server'
-
-import { GameFilters } from '@/components/game/game.store'
 import {
   ChessAccount,
   GameCategory
 } from '@prisma/client'
+
+export type GameFilters = {
+  providers: string[]
+  tags: string[]
+  categories: string[]
+  winner: string[]
+  analysed: string[]
+  adversary: string[]
+}
 
 export const convertFiltersToWhere = async (
   chessAccounts: ChessAccount[],
