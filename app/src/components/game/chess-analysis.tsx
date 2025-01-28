@@ -3,7 +3,7 @@
 import { Text } from '@/components/ui/text'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
-import { ChessAccount, GameAnalysis } from '@prisma/client'
+import { GameAnalysis } from '@prisma/client'
 import {
   Ban,
   CircleHelp,
