@@ -25,6 +25,7 @@ import { GameWithAnalysis } from '@/lib/games/games'
 import { getAnalysisFromGame } from '@/lib/games/analysis'
 import { BOARD_DARK_SQUARE_COLOR, BOARD_LIGHT_SQUARE_COLOR } from './chess-game'
 import toast from 'react-hot-toast'
+import { max } from 'lodash'
 
 interface ChessAnalysisProps {
   game: GameWithAnalysis
@@ -92,15 +93,16 @@ export const ChessAnalysis = ({ game, accountsIds }: ChessAnalysisProps) => {
   const data = analysis.scores.map((item, index) => {
     const value = item.split(' ')[0]
     const type = item.split(' ')[1]
+    const maxVal = Math.max(...analysis.scores.map((point) => Math.abs(Number(point.split(' ')[0]))))
+    const score = Number.parseInt(value, 10) * -1
     if (type === 'mate') {
       return {
         move: index + 1,
-        score: 1500,
+        score: ((maxVal + score) * (index % 2 === 0 ? 1 : 1)) , // TODO: check mate for black
         val: item
       }
     }
 
-    const score = Number.parseInt(value, 10) * -1
     return {
       move: index + 1,
       score,
@@ -148,12 +150,12 @@ export const ChessAnalysis = ({ game, accountsIds }: ChessAnalysisProps) => {
       cx % 2 ===
       (game.whiteChessAccountId &&
       accountsIds.includes(game.whiteChessAccountId)
-        ? 1
-        : 0)
+        ? 0
+        : 1)
     ) {
       return ''
     }
-    const category = analysis.movesQuality[cx]
+    const category = analysis.movesQuality[cx-1]
     const mappingColors = {
       excellent: '#00FFFF',
       mistake: '#FFA500',
@@ -170,7 +172,7 @@ export const ChessAnalysis = ({ game, accountsIds }: ChessAnalysisProps) => {
       (point) => point.move === Number(event.activeLabel)
     )
     if (nearestPoint) {
-      setActiveMove(nearestPoint.move)
+      setActiveMove(nearestPoint.move + 1)
     }
   }
 
@@ -185,17 +187,26 @@ export const ChessAnalysis = ({ game, accountsIds }: ChessAnalysisProps) => {
         >
           <AreaChart data={processChartData} onClick={handleChartClick}>
             <Tooltip
-              content={({ active, payload }) => {
-                if (active && payload && payload.length) {
+              content={(props) => {
+                console.log(props)
+                if (props.active && props.payload && props.payload.length) {
                   const sign =
-                    payload &&
-                    payload[0] &&
-                    Number(payload[0].value) - maxValue >= 0
+                    props.payload &&
+                    props.payload[0] &&
+                    Number(props.payload[0].value) - maxValue >= 0
                       ? '+'
                       : '-'
                   const evaluation =
-                    payload && payload[0] && Number(payload[0].value)
-                  const content = `${sign} ${Math.abs((evaluation - maxValue) / 100).toFixed(2)}`
+                    props.payload && props.payload[0] && Number(props.payload[0].value)
+
+                  let content = ''
+                  const move = props.payload[0].payload.move
+                  const foundPoint = data.find((point) => point.move === move)
+                  if (foundPoint && typeof foundPoint.val === 'string' && foundPoint.val.includes('mate')) {
+                    content = `M${Math.abs(Number(foundPoint.val.split(' ')[0]))}`
+                  } else {
+                    content = `${sign} ${Math.abs((evaluation - maxValue)/100)}`
+                  }
                   return (
                     <div className='bg-background text-white p-2 border-s-neutral-600 rounded-md'>
                       <p>{content}</p>
