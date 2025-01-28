@@ -19,7 +19,7 @@ export default async function SignupPage() {
                     <SignupForm />
                     <p className='mt-10 text-sm text-center'>
                         Already have an account?
-                        <span className='ml-1 text-primary hover:underline'>
+                        <span className='ml-1 text-active hover:underline'>
                             <Link href='/signin'>
                                 Sign In
                             </Link>

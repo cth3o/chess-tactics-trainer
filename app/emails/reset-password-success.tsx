@@ -43,8 +43,8 @@ export const ResetPasswordSuccessEmail = ({
       <Tailwind config={config}>
         <Body
         className='px-2 m-auto font-sans bg-background'>
-          <Container className={`mx-auto my-[40px] max-w-[465px] rounded border border-y-0 border-l-4
-          border-r-0 border-solid border-primary bg-foreground p-[20px]`}>
+          <Container className={`mx-auto my-[40px] max-w-[465px] rounded border border-y-0 border-l-6
+          border-r-0 border-solid border-active bg-foreground p-[20px]`}>
             <Section className='mt-[32px]'>
               <Img
                 src={`${baseUrl}/ctm-logo.png`}

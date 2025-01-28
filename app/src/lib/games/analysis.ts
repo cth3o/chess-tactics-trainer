@@ -1,3 +1,5 @@
+'use server'
+
 import prisma from '@/lib/database'
 
 export const getAnalysisFromGame = async (gameId: string) => {
