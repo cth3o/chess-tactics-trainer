@@ -62,7 +62,7 @@ export const getChessAccountFromUser = (user: UserWithAccounts | null): ChessAcc
   return user?.chessAccounts.map((account) => account.chessAccount) || []
 }
 
-export const fetchChessAccounts = async (user: UserWithAccounts) => {
+export const fetchChessAccounts = async (user: UserWithAccounts): Promise<ChessAccount[]> => {
   const accounts = await prisma.chessAccount.findMany({
     where: {
       users: {

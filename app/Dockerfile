@@ -5,7 +5,7 @@ WORKDIR /app
 COPY app . 
 COPY prisma .
 
-RUN npm install --legacy-peer-deps
+RUN npm install
 RUN npm run build:ci
 
 EXPOSE 8080
