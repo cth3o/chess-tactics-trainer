@@ -11,9 +11,9 @@ export const infosHasChanged = async (user: UserWithAccounts) => {
 
   const accounts = await fetchChessAccounts(user)
 
-  const hasChanged = user.chessAccounts.some((currentAccount) =>
+  const hasChanged = user.chessAccounts.some((currentAccount: any) =>
     accounts.some(
-      (account) =>
+      (account: any) =>
         account.id === currentAccount.chessAccount.id &&
         (account.isFetching !== currentAccount.chessAccount.isFetching ||
           account.lastFetch?.toUTCString() !==
