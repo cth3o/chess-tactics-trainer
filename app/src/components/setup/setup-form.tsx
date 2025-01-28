@@ -63,8 +63,8 @@ export const SetupForm = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                lichessUsername: accounts.lichess,
-                chesscomUsername: accounts.chesscom
+                lichessUsername: accounts.lichess.trim(),
+                chesscomUsername: accounts.chesscom.trim()
             })
         })
         if (response.ok) {

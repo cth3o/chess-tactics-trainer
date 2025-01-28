@@ -3,7 +3,7 @@
 import { Text } from '@/components/ui/text'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
-import { GameAnalysis } from '@prisma/client'
+import { ChessAccount, GameAnalysis } from '@prisma/client'
 import {
   Ban,
   CircleHelp,
@@ -28,24 +28,24 @@ import toast from 'react-hot-toast'
 
 interface ChessAnalysisProps {
   game: GameWithAnalysis
+  accountsIds: string[]
 }
 
 const REFRESH_INTERVAL = 2000
 
-export const ChessAnalysis = ({ game }: ChessAnalysisProps) => {
+export const ChessAnalysis = ({ game, accountsIds }: ChessAnalysisProps) => {
   const [analysis, setAnalysis] = useState<GameAnalysis | null>(
     game.analysis[0] || null
   )
   const [isLoading, setIsLoading] = useState(game.analysing)
   const setActiveMove = useGameStore((state) => state.setActiveMove)
 
-  const getLastAnalysis = () => {
-    getAnalysisFromGame(game.id).then((currentAnalysis) => {
-      setAnalysis(currentAnalysis)
-      if (currentAnalysis !== null) {
-        setIsLoading(false)
-      }
-    })
+  const getLastAnalysis = async () => {
+    const currentAnalysis = await getAnalysisFromGame(game.id)
+    setAnalysis(currentAnalysis)
+    if (currentAnalysis !== null) {
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export const ChessAnalysis = ({ game }: ChessAnalysisProps) => {
   // if loading polling analysis each 2 seconds
   useEffect(() => {
     if (isLoading) {
-      const interval = setInterval(() => {
+      const interval = setInterval(async () => {
         getLastAnalysis()
       }, REFRESH_INTERVAL)
       return () => clearInterval(interval)
@@ -79,9 +79,7 @@ export const ChessAnalysis = ({ game }: ChessAnalysisProps) => {
         <Button
           onClick={async () => {
             setIsLoading(true)
-            toast.success(
-              'Starting analysis, this may take a few seconds'
-            )
+            toast.success('Starting analysis, this may take a few seconds')
             createChessAnalysisTask(game.id)
           }}
         >
@@ -93,10 +91,20 @@ export const ChessAnalysis = ({ game }: ChessAnalysisProps) => {
 
   const data = analysis.scores.map((item, index) => {
     const value = item.split(' ')[0]
+    const type = item.split(' ')[1]
+    if (type === 'mate') {
+      return {
+        move: index + 1,
+        score: 1500,
+        val: item
+      }
+    }
+
     const score = Number.parseInt(value, 10) * -1
     return {
       move: index + 1,
-      score
+      score,
+      val: item
     }
   })
 
@@ -136,7 +144,13 @@ export const ChessAnalysis = ({ game }: ChessAnalysisProps) => {
   }))
 
   const getMoveColor = (cx: number) => {
-    if (cx % 2 === 0) {
+    if (
+      cx % 2 ===
+      (game.whiteChessAccountId &&
+      accountsIds.includes(game.whiteChessAccountId)
+        ? 1
+        : 0)
+    ) {
       return ''
     }
     const category = analysis.movesQuality[cx]
@@ -156,7 +170,7 @@ export const ChessAnalysis = ({ game }: ChessAnalysisProps) => {
       (point) => point.move === Number(event.activeLabel)
     )
     if (nearestPoint) {
-      setActiveMove(nearestPoint.move - 1)
+      setActiveMove(nearestPoint.move)
     }
   }
 

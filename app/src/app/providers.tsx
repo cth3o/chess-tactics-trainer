@@ -21,7 +21,7 @@ export const Providers = ({ children }: ProvidersProps) => {
           duration: 5000,
           style: {
             borderRadius: '0px',
-            background: '#2E252A',
+            background: '#302E2B',
             color: '#FFFFFF',
             maxWidth: '500px',
             borderLeft: '5px solid #AD6205'

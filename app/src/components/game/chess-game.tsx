@@ -158,7 +158,7 @@ export const ChessGame = ({
             <div className='w-full overflow-x-auto border-collapse border border-gray-900 max-h-60'>
               <table className='table-auto w-full'>
                 <thead className='sticky top-0 text-center bg-foreground'>
-                  <i className='flex items-center justify-start gap-2 text-base'>
+                  <i className='flex items-center justify-start gap-2 text-sm'>
                     <BookOpenText size={14} className='ml-4' />
                     {game.opening}
                   </i>
@@ -168,7 +168,7 @@ export const ChessGame = ({
                   (moves: string[], index: number) => {
                     return (
                       <tr
-                        className='flex justify-start gap-8 text-base odd:bg-foreground even:bg-background'
+                        className='flex justify-start gap-8 text-sm odd:bg-foreground even:bg-background'
                         key={`move-${index}`}
                         // @ts-ignore
                         ref={(el: HTMLTableRowElement | null) =>
@@ -178,7 +178,7 @@ export const ChessGame = ({
                         <td className='w-14 ml-16'>{index + 1}.</td>
                         <td
                           onClick={() => goToMove(index * 2 + 1)}
-                          className={cn('w-14 cursor-pointer', {
+                          className={cn('w-16 cursor-pointer', {
                             'font-bold text-active':
                               Math.floor((moveIndex - 1) / 2) === index &&
                               moveIndex % 2 === 1
@@ -188,7 +188,7 @@ export const ChessGame = ({
                         </td>
                         <td
                           onClick={() => goToMove(index * 2 + 2)}
-                          className={cn('w-14 cursor-pointer', {
+                          className={cn('w-16 cursor-pointer', {
                             'font-bold text-active':
                               Math.floor((moveIndex - 1) / 2) === index &&
                               moveIndex % 2 === 0
@@ -235,7 +235,7 @@ export const ChessGame = ({
           </div>
         </div>
         <div className='items-center justify-center hidden w-1/3 h-full bg-background xl:flex'>
-          <ChessAnalysis game={game} />
+          <ChessAnalysis game={game} accountsIds={accountIds} />
         </div>
       </div>
     </MotionCard>
