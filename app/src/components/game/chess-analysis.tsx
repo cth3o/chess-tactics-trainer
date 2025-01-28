@@ -25,7 +25,6 @@ import { GameWithAnalysis } from '@/lib/games/games'
 import { getAnalysisFromGame } from '@/lib/games/analysis'
 import { BOARD_DARK_SQUARE_COLOR, BOARD_LIGHT_SQUARE_COLOR } from './chess-game'
 import toast from 'react-hot-toast'
-import { max } from 'lodash'
 
 interface ChessAnalysisProps {
   game: GameWithAnalysis
@@ -155,7 +154,7 @@ export const ChessAnalysis = ({ game, accountsIds }: ChessAnalysisProps) => {
     ) {
       return ''
     }
-    const category = analysis.movesQuality[cx-1]
+    const category = analysis.movesQuality[cx - 1]
     const mappingColors = {
       excellent: '#00FFFF',
       mistake: '#FFA500',
@@ -205,7 +204,7 @@ export const ChessAnalysis = ({ game, accountsIds }: ChessAnalysisProps) => {
                   if (foundPoint && typeof foundPoint.val === 'string' && foundPoint.val.includes('mate')) {
                     content = `M${Math.abs(Number(foundPoint.val.split(' ')[0]))}`
                   } else {
-                    content = `${sign} ${Math.abs((evaluation - maxValue)/100)}`
+                    content = `${sign} ${Math.abs((evaluation - maxValue) / 100)}`
                   }
                   return (
                     <div className='bg-background text-white p-2 border-s-neutral-600 rounded-md'>
