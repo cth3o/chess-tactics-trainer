@@ -20,9 +20,11 @@ import {
   Tooltip
 } from 'recharts'
 import { createChessAnalysisTask } from '@/lib/cloudtask'
-import { GameWithAnalysis, useGameStore } from '../../stores/game.store'
+import { useGameStore } from '@/stores/game.store'
+import { GameWithAnalysis } from '@/lib/games/games'
 import { getAnalysisFromGame } from '@/lib/games/analysis'
 import { BOARD_DARK_SQUARE_COLOR, BOARD_LIGHT_SQUARE_COLOR } from './chess-game'
+import toast from 'react-hot-toast'
 
 interface ChessAnalysisProps {
   game: GameWithAnalysis
@@ -75,8 +77,11 @@ export const ChessAnalysis = ({ game }: ChessAnalysisProps) => {
       <div className='flex flex-col items-center justify-around p-8 gap-4 text-center'>
         <Text as='h4'>No analysis yet</Text>
         <Button
-          onClick={() => {
+          onClick={async () => {
             setIsLoading(true)
+            toast.success(
+              'Starting analysis, this may take a few seconds'
+            )
             createChessAnalysisTask(game.id)
           }}
         >

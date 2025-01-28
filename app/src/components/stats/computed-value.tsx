@@ -2,10 +2,11 @@
 
 import { ChessAccount } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
-import { GameFilters, useGameStore } from '@/stores/game.store'
+import { useGameStore } from '@/stores/game.store'
 import { Loader2 } from 'lucide-react'
 import { useEffect } from 'react'
 import { queryClient } from '@/app/providers'
+import { GameFilters } from '@/lib/stats/filters'
 
 interface ComputedNumberProps {
   computedKey: string

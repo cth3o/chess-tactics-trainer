@@ -1,3 +1,5 @@
+'use server'
+
 import { getServerSession } from 'next-auth/next'
 import { redirect } from 'next/navigation'
 import { nextAuthConfig } from '@/pages/api/auth/[...nextauth]'

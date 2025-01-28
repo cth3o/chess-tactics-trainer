@@ -1,6 +1,7 @@
 'use server'
 
 import { CloudTasksClient } from '@google-cloud/tasks'
+
 import fs from 'fs'
 import prisma from './database'
 
@@ -27,7 +28,6 @@ export const createLichessSynchonizerTask = async (accountId: string) => {
   const location = process.env.GCP_LOCATION!
   const queue = process.env.GCP_LICHESS_SYNCHRONIZER_QUEUE!
   const url = process.env.GCP_LICHESS_SYNCHRONIZER_URL
-
 
   const parent = cloudTaskClient.queuePath(project, location, queue)
 

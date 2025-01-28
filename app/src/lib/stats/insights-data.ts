@@ -1,9 +1,8 @@
 'use server'
 
-import { GameFilters } from '@/stores/game.store'
 import { ChessAccount } from '@prisma/client'
 import prisma from '../database'
-import { convertFiltersToWhere } from './filters'
+import { convertFiltersToWhere, GameFilters } from './filters'
 
 export const countTotalGames = async (
   chessAccounts: ChessAccount[],

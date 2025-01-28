@@ -23,10 +23,10 @@ export default async function StatsPage() {
 
   const getTotalGamesFromOpening = (commonOpening: string) => {
     return openings
-      .filter((opening) =>
+      .filter((opening: { opening: string }) =>
         opening.opening.toLowerCase().includes(commonOpening)
       )
-      .reduce((acc, curr) => acc + curr._count._all, 0)
+      .reduce((acc: any, curr: { _count: { _all: any } }) => acc + curr._count._all, 0)
   }
 
   const openingChallenges = OPENING_CHALLENGES.map((challenge) => ({
