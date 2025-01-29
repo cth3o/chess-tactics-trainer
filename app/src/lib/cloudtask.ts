@@ -116,7 +116,7 @@ export const createChessAnalysisTask = async (gameId: string) => {
               movetime: 1000,
               multipv: 3,
               skillLevel: 20,
-              threads: 1,
+              threads: 2,
               hash: 1024,
             })).toString('base64'),
           headers: {
