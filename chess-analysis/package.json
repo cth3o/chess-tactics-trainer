@@ -7,7 +7,7 @@
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
     "extract": "npm run prisma:generate && cp package.json dist && cp .env dist/ && cp -R ../prisma dist/prisma && cp -R bin/ dist/bin && chmod +x dist/bin/stockfish",
-    "deploy": "tsc && npm run extract && gcloud functions deploy chess-analysis --runtime nodejs20 --memory 512MB --trigger-http --allow-unauthenticated --source ./dist --no-gen2 --entry-point chessAnalysisFunction --set-env-vars=$(tr '\n' ',' < ./config/production) --region europe-west1 --service-account 94517653133-compute@developer.gserviceaccount.com"
+    "deploy": "tsc && npm run extract && gcloud functions deploy chess-analysis --runtime nodejs20 --memory 4096MB --trigger-http --allow-unauthenticated --source ./dist --no-gen2 --entry-point chessAnalysisFunction --set-env-vars=$(tr '\n' ',' < ./config/production) --region europe-west1 --service-account 94517653133-compute@developer.gserviceaccount.com"
   },
   "author": "Zatonix",
   "private": true,
